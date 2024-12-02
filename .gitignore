@@ -1,0 +1,62 @@
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+#Django / Backend
+backend/venv
+
+# Dependency directories
+node_modules/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Django-specific
+db.sqlite3
+/static/
+media/
+
+# React/Vite-specific
+/dist/
+.vite/
+*.local
+
+# Coverage
+coverage/
+.nyc_output/
+*.lcov
+
+# IDE settings
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Nginx
+nginx/certs/
+nginx/*.pid
+nginx/*.log
+
+# Docker
+docker-compose.override.yml
+*.env
+*.pid
+*.tar
+
+# Pytest
+.pytest_cache/
+htmlcov/
+
+# Miscellaneous
+*.bak
+*.tmp
