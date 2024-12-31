@@ -1,0 +1,13 @@
+.draggable-item {
+  position: absolute;
+  border: 0.5px solid black;
+  box-sizing: border-box;
+  border-radius: 3px;
+  background: linear-gradient(135deg, #80CBC4, #7986CB);
+
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: grab;
+}

@@ -1,0 +1,8 @@
+.droppable-cell {
+    width: 100px;
+    height: 100px;
+    border: 0.5px solid black;
+    box-sizing: border-box;
+    border-radius: 3px;
+  }
+  

@@ -1,0 +1,17 @@
+.settings-container {
+  margin-top: 20px;
+  display: inline-block;
+  text-align: left;
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.settings-container h3 {
+  margin-top: 0;
+}
+
+.settings-container label {
+  display: inline-block;
+  width: 100px;
+}
