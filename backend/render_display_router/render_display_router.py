@@ -11,11 +11,11 @@ async def render_display(request: Request):
         print("Raw body:", body.decode("utf-8"))
 
         json_body = await request.json()
-
         modules = json_body["modules"]
 
+        print("display_text_at_position type:", type(display_text_at_position))
         print("Let's draw the screen")
-        display_text_at_position(modules)
+
+        await display_text_at_position(modules)  # Proper await
     except Exception as e:
-        print("Error:", str(e))
-        raise Exception(e)
+        print("Error in render_display:", str(e))

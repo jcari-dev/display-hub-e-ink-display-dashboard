@@ -1,8 +1,9 @@
 import xml.etree.ElementTree as ET
 from datetime import datetime
 
+from database.module_settings.weather import WeatherSettings
+from module_data_gen.thirdparty_apis.weather import gather_weather_data
 from PIL import Image, ImageDraw, ImageFont
-
 from waveshare.epd2in13_V4 import EPD
 
 MODULE_SIZES = {
@@ -152,8 +153,16 @@ def get_email_data():
     return email_data
 
 
-def get_weather_data(zipcode):
+def get_weather_data():
 
+    weather_settings = WeatherSettings.get_or_none(id=1)
+    print(weather_settings)
+    timezone = weather_settings["timezone"]
+    scale = weather_settings["scale"]
+    zipcode = weather_settings["zipcode"]
+
+    gather_weather_data(scale, timezone, zipcode)
+    print("This is the data from latest", gather_weather_data)
     return f"19°F{WEATHER_CODES_MAP[56]}"
 
 
@@ -177,7 +186,7 @@ def generate_drawings(modules):
 
         elif module_type == "weather":
 
-            weather_data = get_weather_data("01902")
+            weather_data = get_weather_data()
             xy = allocate_module(module)
 
             x = xy["x"]
@@ -249,17 +258,21 @@ def inner_boundaries_map_line(line_drawing):
 
     line_a = {"x1": 0, "y1": 61, "x2": 187.5, "y2": 61}  # "___ "
 
-    line_b = {"x1": 187.5, "y1": 61, "x2": 187.5, "y2": 0}  # "   | " upper half
+    line_b = {"x1": 187.5, "y1": 61, "x2": 187.5,
+              "y2": 0}  # "   | " upper half
 
     line_c = {"x1": 62.5, "y1": 61, "x2": 62.5, "y2": 0}  # " |  " upper half
 
-    line_d = {"x1": 62.5, "y1": 61, "x2": 250, "y2": 61}  # " ___" # middle line
+    line_d = {"x1": 62.5, "y1": 61, "x2": 250,
+              "y2": 61}  # " ___" # middle line
 
-    line_e = {"x1": 187.5, "y1": 61, "x2": 187.5, "y2": 122}  # "   | " # lower half
+    line_e = {"x1": 187.5, "y1": 61, "x2": 187.5,
+              "y2": 122}  # "   | " # lower half
 
     line_f = {"x1": 0, "y1": 61, "x2": 250, "y2": 61}  # "____" middle_ilne
 
-    line_g = {"x1": 62.5, "y1": 61, "x2": 62.5, "y2": 250}  # " |   "  lower half
+    line_g = {"x1": 62.5, "y1": 61, "x2": 62.5,
+              "y2": 250}  # " |   "  lower half
 
     line_h = {"x1": 0, "y1": 61, "x2": 62.5, "y2": 61}  # "_   " middle line
 
@@ -273,7 +286,8 @@ def inner_boundaries_map_line(line_drawing):
 
     line_m = {"x1": 125, "y1": 61, "x2": 125, "y2": 250}  # "  |  " lower half
 
-    line_n = {"x1": 187.5, "y1": 61, "x2": 187.5, "y2": 250}  # "   | " lower half
+    line_n = {"x1": 187.5, "y1": 61, "x2": 187.5,
+              "y2": 250}  # "   | " lower half
 
     if line_drawing == "____":
         return [line_f]
@@ -434,7 +448,8 @@ def display_text_at_position(modules):
             line_y = y + vertical_offset + index * line_height
 
             # Draw the text
-            draw.text((centered_x, line_y), line, font=font, fill=0)  # 0 = black text
+            draw.text((centered_x, line_y), line,
+                      font=font, fill=0)  # 0 = black text
 
     for module in modules:
         line_coordinates = draw_module_inner_boundaries(module)
@@ -462,18 +477,7 @@ if __name__ == "__main__":
 
     modules = [
         {"type": "email", "start_position": 5},
-        # {
-        # "type": "email",
-        # "start_position": 1
-        # },
-        # {
-        # "type": "fill",
-        # "start_position": 1
-        # },
-        # {
-        # "type": "weather",
-        # "start_position": 3
-        # },
+
         {"type": "weather", "start_position": 4},
         {"type": "traffic", "start_position": 1},
     ]

@@ -1,6 +1,5 @@
-from fastapi import APIRouter
-
 from display_main import display_text_at_position
+from fastapi import APIRouter
 
 router = APIRouter()
 
