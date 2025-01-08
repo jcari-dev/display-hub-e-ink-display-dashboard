@@ -42,13 +42,13 @@ def gather_weather_data(scale, timezone, zipcode="32836"):
                 "latitude": latlong["lat"],
                 "longitude": latlong["long"],
                 "current_weather": True,
-                "temperature_unit": "fahrenheit"
+                "temperature_unit": scale,
+                "timezone": "auto"
             },
             timeout=10
         )
         response.raise_for_status()
         data = response.json()
-
         return {"data": data}
 
     except requests.exceptions.RequestException as e:
