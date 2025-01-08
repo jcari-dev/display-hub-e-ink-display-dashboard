@@ -5,6 +5,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from render_display_router.render_display_router import \
     router as render_display_router
+from settings.get_settings import router as get_settings_router
+from settings.save_settings import router as save_settings_router
 from tortoise.contrib.fastapi import register_tortoise
 from weather import router as weather_router
 
@@ -24,7 +26,7 @@ def test_task():
     print("Every 30 seconds.")
 
 
-scheduler.add_job(test_task, "interval", seconds=10)
+scheduler.add_job(test_task, "interval", seconds=1600)
 scheduler.start()
 
 
@@ -54,6 +56,11 @@ app.include_router(weather_router, prefix="/weather")
 app.include_router(display_utils_router, prefix="/display-utils")
 app.include_router(display_sample_router, prefix="/display-sample")
 app.include_router(render_display_router, prefix="/render")
+app.include_router(save_settings_router, prefix="/save_settings")
+app.include_router(get_settings_router, prefix="/get_settings")
+
+for route in app.routes:
+    print(route.path, route.name)
 
 
 @app.on_event("shutdown")
