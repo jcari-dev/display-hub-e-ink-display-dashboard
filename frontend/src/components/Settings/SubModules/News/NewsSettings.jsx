@@ -19,7 +19,7 @@ const NewsSettings = () => {
 	const providers = {
 		English: {
 			"The New York Times": [
-				"NYT Homepage",
+				"NYT Home Page",
 				"World",
 				"Africa",
 				"Americas",
@@ -29,7 +29,8 @@ const NewsSettings = () => {
 				"U.S.",
 				"Education",
 				"Politics",
-				"N.Y. / Region",
+				"The Upshot",
+				"N.Y./Region",
 				"Business",
 				"Energy & Environment",
 				"Small Business",
@@ -90,6 +91,7 @@ const NewsSettings = () => {
 				"Paul Krugman",
 				"Farhad Manjoo",
 				"Bret Stephens",
+				"Sunday Opinion",
 			],
 			"Reuters": [
 				"All Sectors",
@@ -173,8 +175,11 @@ const NewsSettings = () => {
 	useEffect(() => {
 		const loadNewsSettings = async () => {
 			try {
-				const response = await fetch("http://pi400.local:8001/settings/get?module=news");
-				if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+				const response = await fetch(
+					"http://pi400.local:8001/settings/get?module=news",
+				);
+				if (!response.ok)
+					throw new Error(`HTTP error! status: ${response.status}`);
 				const data = await response.json();
 				if (data) {
 					setNewsSettings(data);
@@ -190,7 +195,7 @@ const NewsSettings = () => {
 
 	const handleInputChange = (e) => {
 		const { name, value } = e.target;
-		console.log(name, value, "values???")
+		console.log(name, value, "values???");
 		setFormValues((prevValues) => {
 			const updatedValues = { ...prevValues, [name]: value };
 
@@ -210,7 +215,7 @@ const NewsSettings = () => {
 	const handleSaveNewsSettings = async (e) => {
 		e.preventDefault();
 		try {
-			console.log(formValues, "form values???")
+			console.log(formValues, "form values???");
 			const response = await fetch("http://pi400.local:8001/settings/save", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
@@ -219,11 +224,15 @@ const NewsSettings = () => {
 					settings: formValues,
 				}),
 			});
-			if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+			if (!response.ok)
+				throw new Error(`HTTP error! status: ${response.status}`);
 			const data = await response.json();
 			console.log("Save Response:", data);
 			setNewsSettings(formValues);
-			setNotification({ message: "Settings successfully saved!", type: "success" });
+			setNotification({
+				message: "Settings successfully saved!",
+				type: "success",
+			});
 		} catch (error) {
 			console.error("Error saving news settings:", error);
 			setNotification({ message: "Unable to save settings!", type: "error" });
@@ -236,8 +245,8 @@ const NewsSettings = () => {
 		<div>
 			<h2>News Settings</h2>
 			<div>
-				Current Settings: {newsSettings.language || "None"}, {newsSettings.outlet || "None"},{" "}
-				{newsSettings.rss_feed || "None"}
+				Current Settings: {newsSettings.language || "None"},{" "}
+				{newsSettings.outlet || "None"}, {newsSettings.rss_feed || "None"}
 			</div>
 
 			{/* Language Selector */}
@@ -251,7 +260,10 @@ const NewsSettings = () => {
 					>
 						<option value="">--- Select ---</option>
 						{Object.keys(providers).map((language) => (
-							<option key={language} value={language}>
+							<option
+								key={language}
+								value={language}
+							>
 								{language}
 							</option>
 						))}
@@ -272,7 +284,10 @@ const NewsSettings = () => {
 						<option value="">--- Select ---</option>
 						{formValues.language &&
 							Object.keys(providers[formValues.language]).map((outlet) => (
-								<option key={outlet} value={outlet}>
+								<option
+									key={outlet}
+									value={outlet}
+								>
 									{outlet}
 								</option>
 							))}
@@ -293,7 +308,10 @@ const NewsSettings = () => {
 						<option value="">--- Select ---</option>
 						{formValues.outlet &&
 							providers[formValues.language][formValues.outlet].map((feed) => (
-								<option key={feed} value={feed}>
+								<option
+									key={feed}
+									value={feed}
+								>
 									{feed}
 								</option>
 							))}
@@ -314,7 +332,10 @@ const NewsSettings = () => {
 			)}
 
 			{/* Save Button */}
-			<button onClick={handleSaveNewsSettings} style={{ marginTop: "15px" }}>
+			<button
+				onClick={handleSaveNewsSettings}
+				style={{ marginTop: "15px" }}
+			>
 				Save News Settings
 			</button>
 		</div>

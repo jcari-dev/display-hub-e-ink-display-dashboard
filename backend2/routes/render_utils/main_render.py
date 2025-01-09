@@ -1,10 +1,13 @@
+import random
 import xml.etree.ElementTree as ET
 from datetime import datetime
 
+import feedparser
 from db import get_db
-from db.models import WeatherSettings
+from db.models import NewsSettings, WeatherSettings
 from module_data_gen.thirdparty_apis.weather import gather_weather_data
 from PIL import Image, ImageDraw, ImageFont
+from utils.utils import RSS_FEED_MAP
 from waveshare.epd2in13_V4 import EPD
 
 MODULE_SIZES = {
@@ -66,40 +69,45 @@ def format_time(pub_date):
     """Convert pubDate to local time and format it for display."""
     utc_time = datetime.strptime(pub_date, "%a, %d %b %Y %H:%M:%S %z")
     local_time = utc_time.astimezone()
-    return local_time.strftime("|%I:%M %p").lstrip("0")
+    return local_time.strftime("|%H:%M").lstrip("0")
 
 
-def process_news_for_display(file_path, item_index=0):
-    # Parse the XML file
-    # TODO YOU HAVE TO REMOVE THE LAST WORD IF THE LENGTH EXCEEDS
-    tree = ET.parse(file_path)
-    root = tree.getroot()
+def truncate_to_fit(text, limit):
+    # Truncate text without cutting off words
+    if len(text) > limit:
+        truncated = text[:limit].rsplit(" ", 1)[0]
+        return truncated
+    return text
 
-    # Extract all <item> elements
-    items = root.findall("channel/item")
-    if len(items) <= item_index:
-        return f'text="""No news available at index {item_index}.\n\n"""'
 
-    # Get the specified <item>
-    item = items[item_index]
+def process_news_for_display():
 
-    # Get title, description, and pubDate
-    title = item.findtext("title", "").strip()
+    db = next(get_db())
 
-    pub_date = item.findtext("pubDate", "").strip()
+    news_settings = db.get(NewsSettings, 1)
 
-    # Format time
+    db.close()
+
+    outlet = news_settings.outlet
+    rss_feed = news_settings.rss_feed
+
+    feed_url = RSS_FEED_MAP[outlet][rss_feed]
+    print("?help uwupre ")
+
+    feed = feedparser.parse(feed_url)
+    print("?help uwu")
+    print(feed.entries)
+    content = random.choice(feed.entries)
+    pub_date = content.published
+    title = content.title.strip()
+
     formatted_time = format_time(pub_date)
 
-    content = title
-
-    # Truncate content to fit lines
-    top_line = content[:20].strip()
-    middle_line = content[20:40].strip()
-    bottom_text = content[40:50].strip()
+    top_line = title[:20].strip()
+    middle_line = title[20:40].strip()
+    bottom_text = truncate_to_fit(title[40:53].strip(), 13)
     bottom_line = f"{bottom_text} {formatted_time}"
 
-    # Format final text
     return f"{top_line}\n{middle_line}\n{bottom_line}"
 
 
@@ -215,7 +223,7 @@ def generate_drawings(modules):
 
         elif module_type == "news":
 
-            news = process_news_for_display("./sample_data/World.xml", 12)
+            news = process_news_for_display()
 
             xy = allocate_module(module)
 
