@@ -144,7 +144,7 @@ const App = () => {
       });
   };
   const handleClearDisplay = () => {
-    fetch("http://pi400.local:8001/display-utils/clear")
+    fetch("http://pi400.local:8001/render/clear")
       .then((response) => {
         if (response.status === 200) {
           return response.json().then((data) => {

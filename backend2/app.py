@@ -1,3 +1,5 @@
+import os
+
 from bottle import Bottle, request, response
 from db import init_db
 from routes import render_routes, setting_routes, weather_routes
@@ -5,6 +7,8 @@ from routes import render_routes, setting_routes, weather_routes
 app = Bottle()
 
 init_db()
+
+# os.environ['GPIOZERO_PIN_FACTORY'] = 'mock'
 
 
 @app.hook("after_request")
@@ -19,4 +23,4 @@ app.mount('/settings', setting_routes)
 app.mount('/render', render_routes)
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8001)
+    app.run(host="0.0.0.0", debug=True, port=8001)

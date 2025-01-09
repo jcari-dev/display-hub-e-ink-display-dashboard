@@ -150,7 +150,7 @@ def get_weather_data():
     weather_settings = db.get(WeatherSettings, 1)
 
     db.close()
-
+    print("we got here?")
     timezone = weather_settings.timezone
     scale = weather_settings.scale
     zipcode = weather_settings.zipcode
@@ -164,7 +164,7 @@ def get_weather_data():
     current_weather_code = current['weathercode']
 
     current_scale = scale[0].upper()
-
+    print("pass it?")
     return f"{current_temperature}°{current_scale}{WEATHER_CODES_MAP[current_weather_code]}"
 
 
@@ -470,3 +470,9 @@ def display_text_at_position(modules):
     # Send the image to the e-paper display
     epd.display(epd.getbuffer(rotated_image))
     epd.sleep()  # Put the display into sleep mode to save power
+
+
+def display_clear():
+    epd = EPD()
+    epd.init()
+    epd.Clear()

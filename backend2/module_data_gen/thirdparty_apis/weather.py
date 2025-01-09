@@ -49,11 +49,17 @@ def gather_weather_data(scale, timezone, zipcode="32836"):
         )
         response.raise_for_status()
         data = response.json()
+        print(data, "this is data")
         return {"data": data}
 
     except requests.exceptions.RequestException as e:
+        print(e)
+
         return {"error": f"Request error: {e}"}
     except ValueError as e:
+        print(e)
+
         return {"error": f"JSON decode error: {e}"}
     except Exception as e:
+        print(e)
         return {"error": f"Unexpected error: {e}"}

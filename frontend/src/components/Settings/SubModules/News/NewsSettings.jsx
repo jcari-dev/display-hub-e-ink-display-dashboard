@@ -1,14 +1,25 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./NewsSettings.css";
 
 const NewsSettings = () => {
+	const [newsSettings, setNewsSettings] = useState({
+		language: "",
+		outlet: "",
+		rss_feed: "",
+	});
 
-	const handleSaveNewsSettings = () =>{
+	const [formValues, setFormValues] = useState({
+		language: "",
+		outlet: "",
+		rss_feed: "",
+	});
 
-	}
+	const [notification, setNotification] = useState({ message: "", type: "" });
+
 	const providers = {
 		English: {
 			"The New York Times": [
+				"NYT Homepage",
 				"World",
 				"Africa",
 				"Americas",
@@ -129,7 +140,7 @@ const NewsSettings = () => {
 				"Sociedad",
 				"Internacional",
 				"Opinión",
-				"España",
+				"España", // Dupe?
 				"Economía",
 				"Ciencia",
 				"Tecnología",
@@ -159,93 +170,151 @@ const NewsSettings = () => {
 		},
 	};
 
-	const [selectedLanguage, setSelectedLanguage] = useState("");
-	const [selectedProvider, setSelectedProvider] = useState("");
-	const [currentNewsSettings, setCurrentNewsSettings] = useState({
-		Language: "English",
-		Outlet: "The New York Times",
-		RSS: "Business",
-	});
+	useEffect(() => {
+		const loadNewsSettings = async () => {
+			try {
+				const response = await fetch("http://pi400.local:8001/settings/get?module=news");
+				if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+				const data = await response.json();
+				if (data) {
+					setNewsSettings(data);
+					setFormValues(data);
+				}
+			} catch (error) {
+				console.error("Error loading news settings:", error);
+			}
+		};
 
-	const handleLanguageChange = (e) => {
-		setSelectedLanguage(e.target.value);
-		setSelectedProvider(""); // Reset provider when language changes
+		loadNewsSettings();
+	}, []);
+
+	const handleInputChange = (e) => {
+		const { name, value } = e.target;
+		console.log(name, value, "values???")
+		setFormValues((prevValues) => {
+			const updatedValues = { ...prevValues, [name]: value };
+
+			if (name === "language") {
+				updatedValues.outlet = "";
+				updatedValues.rss_feed = "";
+			}
+
+			if (name === "outlet") {
+				updatedValues.rss_feed = "";
+			}
+
+			return updatedValues;
+		});
 	};
 
-	const handleProviderChange = (e) => {
-		setSelectedProvider(e.target.value);
+	const handleSaveNewsSettings = async (e) => {
+		e.preventDefault();
+		try {
+			console.log(formValues, "form values???")
+			const response = await fetch("http://pi400.local:8001/settings/save", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					module: "news",
+					settings: formValues,
+				}),
+			});
+			if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+			const data = await response.json();
+			console.log("Save Response:", data);
+			setNewsSettings(formValues);
+			setNotification({ message: "Settings successfully saved!", type: "success" });
+		} catch (error) {
+			console.error("Error saving news settings:", error);
+			setNotification({ message: "Unable to save settings!", type: "error" });
+		} finally {
+			setTimeout(() => setNotification({ message: "", type: "" }), 3000);
+		}
 	};
 
 	return (
 		<div>
-			Current Settings: {currentNewsSettings.Language},{" "}
-			{currentNewsSettings.Outlet}, {currentNewsSettings.RSS}
+			<h2>News Settings</h2>
+			<div>
+				Current Settings: {newsSettings.language || "None"}, {newsSettings.outlet || "None"},{" "}
+				{newsSettings.rss_feed || "None"}
+			</div>
+
 			{/* Language Selector */}
-			<br />
-			---
-			<br />
-			<label>
-				Select a Language: &nbsp;
-				<select
-					value={selectedLanguage}
-					onChange={handleLanguageChange}
-				>
-					<option value="">---Select---</option>
-					{Object.keys(providers).map((language) => (
-						<option
-							key={language}
-							value={language}
-						>
-							{language}
-						</option>
-					))}
-				</select>
-			</label>
-			<br />
-			{/* News Provider Selector */}
-			{selectedLanguage && (
+			<div style={{ marginTop: "15px" }}>
+				<label>
+					Select a Language: &nbsp;
+					<select
+						name="language"
+						value={formValues.language}
+						onChange={handleInputChange}
+					>
+						<option value="">--- Select ---</option>
+						{Object.keys(providers).map((language) => (
+							<option key={language} value={language}>
+								{language}
+							</option>
+						))}
+					</select>
+				</label>
+			</div>
+
+			{/* Outlet Selector */}
+			<div style={{ marginTop: "15px" }}>
 				<label>
 					Select News Outlet: &nbsp;
 					<select
-						value={selectedProvider}
-						onChange={handleProviderChange}
+						name="outlet"
+						value={formValues.outlet}
+						onChange={handleInputChange}
+						disabled={!formValues.language}
 					>
-						<option value="">----------Select---------</option>
-						{Object.keys(providers[selectedLanguage]).map((provider) => (
-							<option
-								key={provider}
-								value={provider}
-							>
-								{provider}
-							</option>
-						))}
+						<option value="">--- Select ---</option>
+						{formValues.language &&
+							Object.keys(providers[formValues.language]).map((outlet) => (
+								<option key={outlet} value={outlet}>
+									{outlet}
+								</option>
+							))}
 					</select>
 				</label>
-			)}
-			<br />
+			</div>
+
 			{/* RSS Feed Selector */}
-			{selectedProvider && (
+			<div style={{ marginTop: "15px" }}>
 				<label>
 					Pick an RSS Feed: &nbsp;
-					<select>
-						<option value="">-----------Select-----------</option>
-
-						{providers[selectedLanguage][selectedProvider].map((feed) => (
-							<option
-								key={feed}
-								value={feed}
-							>
-								{feed}
-							</option>
-						))}
+					<select
+						name="rss_feed"
+						value={formValues.rss_feed}
+						onChange={handleInputChange}
+						disabled={!formValues.outlet}
+					>
+						<option value="">--- Select ---</option>
+						{formValues.outlet &&
+							providers[formValues.language][formValues.outlet].map((feed) => (
+								<option key={feed} value={feed}>
+									{feed}
+								</option>
+							))}
 					</select>
 				</label>
+			</div>
+
+			{/* Notification */}
+			{notification.message && (
+				<div
+					style={{
+						color: notification.type === "success" ? "green" : "red",
+						marginTop: "15px",
+					}}
+				>
+					{notification.message}
+				</div>
 			)}
-			<br />
-			<button
-				onClick={handleSaveNewsSettings}
-				style={{ height: "18.67px", lineHeight: "0px", marginTop: "15px" }}
-			>
+
+			{/* Save Button */}
+			<button onClick={handleSaveNewsSettings} style={{ marginTop: "15px" }}>
 				Save News Settings
 			</button>
 		</div>
