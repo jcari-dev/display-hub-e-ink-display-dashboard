@@ -195,7 +195,6 @@ const NewsSettings = () => {
 
 	const handleInputChange = (e) => {
 		const { name, value } = e.target;
-		console.log(name, value, "values???");
 		setFormValues((prevValues) => {
 			const updatedValues = { ...prevValues, [name]: value };
 
@@ -215,7 +214,6 @@ const NewsSettings = () => {
 	const handleSaveNewsSettings = async (e) => {
 		e.preventDefault();
 		try {
-			console.log(formValues, "form values???");
 			const response = await fetch("http://pi400.local:8001/settings/save", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
@@ -227,7 +225,6 @@ const NewsSettings = () => {
 			if (!response.ok)
 				throw new Error(`HTTP error! status: ${response.status}`);
 			const data = await response.json();
-			console.log("Save Response:", data);
 			setNewsSettings(formValues);
 			setNotification({
 				message: "Settings successfully saved!",

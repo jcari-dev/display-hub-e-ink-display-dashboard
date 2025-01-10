@@ -1,3 +1,10 @@
+import os
+import stat
+
+from bottle import response
+from db import get_db
+from db.models import TrafficSettings
+
 RSS_FEED_MAP = {
 
     "The New York Times": {
@@ -109,3 +116,87 @@ RSS_FEED_MAP = {
 
 
 }
+
+
+def generate_traffic_api_file():
+    try:
+        file_path = "/tmp/e-ink.txt"
+        with open(file_path, "w") as temp_file:
+            temp_file.write("")
+
+        # Set file permissions to 600
+        os.chmod(file_path, stat.S_IRUSR | stat.S_IWUSR)
+        print(f"File created with secure permissions: {file_path}")
+        return file_path
+    except Exception as e:
+        raise RuntimeError(f"Failed to generate the file: {str(e)}")
+
+
+def consume_file_traffic_api_file():
+    try:
+        file_path = "/tmp/e-ink.txt"
+        print(f"Checking if file exists at: {file_path}")
+        if not os.path.exists(file_path):
+            print("File does not exist.")
+            return {"error": "File doesn't exist"}
+
+        print("Reading file contents...")
+        with open(file_path, 'r') as f:
+            lines = f.readlines()
+
+        print(f"File contents: {lines}")
+
+        if len(lines) != 1:
+            print("File validation failed: More than one line or empty file.")
+            return {"error": "File must contain exactly one line with the API key."}
+
+        api_key = lines[0].strip()
+        print(f"Extracted API key: '{api_key}'")
+
+        if not api_key or len(api_key) < 5:  # Adjust the minimum length as needed
+            print("Invalid API key: It is empty or too short.")
+            return {"error": "Invalid API key. It must be a non-empty string with sufficient length."}
+
+        print("Getting database session...")
+        try:
+            db = next(get_db())
+        except Exception as e:
+            raise RuntimeError(f"Failed to get database session: {str(e)}")
+
+        print("Fetching TrafficSettings from database...")
+        try:
+            traffic_settings = db.get(TrafficSettings, 1)
+        except Exception as e:
+            raise RuntimeError(
+                f"Failed to fetch TrafficSettings from database: {str(e)}")
+
+        if not traffic_settings:
+            print("TrafficSettings not found in database.")
+            return {"error": "Unable to find traffic settings in the database."}
+
+        zipcode = traffic_settings.zipcode
+        print(f"Zipcode retrieved: {zipcode}")
+
+        print("Updating API key in database...")
+        try:
+            traffic_settings.api_key = api_key
+            db.commit()
+            print("API key updated successfully.")
+        except Exception as e:
+            raise RuntimeError(
+                f"Failed to update API key in the database: {str(e)}")
+
+        print("Deleting temporary file...")
+        try:
+            os.remove(file_path)
+            print(f"File {file_path} deleted successfully.")
+        except Exception as e:
+            raise RuntimeError(
+                f"Failed to delete the temporary file: {str(e)}")
+
+        print("Process completed successfully.")
+        return {"success": True, "message": f"API key updated for zipcode {zipcode}"}
+
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+        return {"error": str(e)}

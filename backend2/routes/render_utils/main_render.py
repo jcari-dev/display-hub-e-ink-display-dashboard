@@ -4,7 +4,9 @@ from datetime import datetime
 
 import feedparser
 from db import get_db
-from db.models import NewsSettings, WeatherSettings
+from db.models import NewsSettings, StockSettings, WeatherSettings
+from module_data_gen.thirdparty_apis.financial import get_stock_data
+from module_data_gen.thirdparty_apis.traffic import fetch_incidents
 from module_data_gen.thirdparty_apis.weather import gather_weather_data
 from PIL import Image, ImageDraw, ImageFont
 from utils.utils import RSS_FEED_MAP
@@ -72,14 +74,6 @@ def format_time(pub_date):
     return local_time.strftime("|%H:%M").lstrip("0")
 
 
-def truncate_to_fit(text, limit):
-    # Truncate text without cutting off words
-    if len(text) > limit:
-        truncated = text[:limit].rsplit(" ", 1)[0]
-        return truncated
-    return text
-
-
 def process_news_for_display():
 
     db = next(get_db())
@@ -92,11 +86,9 @@ def process_news_for_display():
     rss_feed = news_settings.rss_feed
 
     feed_url = RSS_FEED_MAP[outlet][rss_feed]
-    print("?help uwupre ")
 
     feed = feedparser.parse(feed_url)
-    print("?help uwu")
-    print(feed.entries)
+
     content = random.choice(feed.entries)
     pub_date = content.published
     title = content.title.strip()
@@ -105,7 +97,7 @@ def process_news_for_display():
 
     top_line = title[:20].strip()
     middle_line = title[20:40].strip()
-    bottom_text = truncate_to_fit(title[40:53].strip(), 13)
+    bottom_text = title[40:53].strip()
     bottom_line = f"{bottom_text} {formatted_time}"
 
     return f"{top_line}\n{middle_line}\n{bottom_line}"
@@ -116,16 +108,12 @@ def allocate_module(module):
     return location_x_y
 
 
-def generate_traffic_data(zipcode):
-    return [
-        ("366 Revere Beach Blvd,\nRevere, MA 02151", "Heavy Traffic"),
-        ("90 North Shore Rd,\nRevere, MA 02151", "Lane Closed"),
-        (
-            "1234 Jean Baptiste Point du Sable Lake Shore Drive,\nChicago, IL 60601",
-            "Lane Closed",
-        ),
-        ("44 Raymond Ave,\nSalem, MA 01970", "Heavy Traffic"),
-    ][:1]
+def generate_traffic_data():
+    incidents = fetch_incidents()
+    if incidents:
+        return random.choice(incidents)  # Return the first incident
+    else:
+        return None  # Handle cases where no incidents are found
 
 
 def get_email_data():
@@ -151,6 +139,18 @@ def get_email_data():
     return email_data
 
 
+def generate_stock_data():
+    db = next(get_db())
+
+    stock_settings = db.get(StockSettings, 1)
+
+    db.close()
+
+    stock_data = get_stock_data(stock_settings.ticker)
+
+    return stock_data
+
+
 def get_weather_data():
 
     db = next(get_db())
@@ -158,7 +158,7 @@ def get_weather_data():
     weather_settings = db.get(WeatherSettings, 1)
 
     db.close()
-    print("we got here?")
+
     timezone = weather_settings.timezone
     scale = weather_settings.scale
     zipcode = weather_settings.zipcode
@@ -172,7 +172,7 @@ def get_weather_data():
     current_weather_code = current['weathercode']
 
     current_scale = scale[0].upper()
-    print("pass it?")
+
     return f"{current_temperature}°{current_scale}{WEATHER_CODES_MAP[current_weather_code]}"
 
 
@@ -183,16 +183,22 @@ def generate_drawings(modules):
         module_type = module["type"]
 
         if module_type == "traffic":
+            print("Generating traffic data...")
+            incident = generate_traffic_data()  # Get a single incident
 
-            incidents = generate_traffic_data("01902")
-
-            for street_name, event in incidents:
+            if incident:
+                street_name, event = incident
                 traffic_event = f"{event} Near\n{street_name}"
-            text = traffic_event
-            xy = allocate_module(module)
+                text = traffic_event
+                xy = allocate_module(module)
 
-            x = xy["x"]
-            y = xy["y"]
+                x = xy["x"]
+                y = xy["y"]
+                print(
+                    f"Traffic data processed for 1 incident. Allocated to coordinates: ({x}, {y})")
+            else:
+                print("No traffic incidents found.")
+                text = "No traffic incidents currently available."
 
         elif module_type == "weather":
 
@@ -232,7 +238,8 @@ def generate_drawings(modules):
             text = news
 
         elif module_type == "stocks":
-            stock_data = "NFLX\n904.77\n-1.72%"
+
+            stock_data = generate_stock_data()
 
             xy = allocate_module(module)
 

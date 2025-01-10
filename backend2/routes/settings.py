@@ -1,6 +1,7 @@
 from bottle import Bottle, request, response
 from db import get_db
-from db.models import NewsSettings, WeatherSettings
+from db.models import (NewsSettings, StockSettings, TrafficSettings,
+                       WeatherSettings)
 
 setting_routes = Bottle()
 
@@ -73,6 +74,42 @@ def save_settings():
                 "rss_feed": settings.rss_feed,
                 "language": settings.language
             }
+        elif module == "stocks":
+            settings = db.get(StockSettings, 1)
+            if settings:
+                settings.ticker = settings_fetched["ticker"]
+            else:
+                settings = StockSettings(
+                    id=1,
+                    ticker=settings_fetched["ticker"],
+                )
+                db.add(settings)
+
+            db.commit()
+            db.refresh(settings)
+
+            saved_settings = {
+                "id": settings.id,
+                "ticker": settings.ticker,
+            }
+        elif module == "traffic":
+            settings = db.get(TrafficSettings, 1)
+            if settings:
+                settings.zipcode = settings_fetched["zipcode"]
+            else:
+                settings = TrafficSettings(
+                    id=1,
+                    zipcode=settings_fetched["zipcode"],
+                )
+                db.add(settings)
+
+            db.commit()
+            db.refresh(settings)
+
+            saved_settings = {
+                "id": settings.id,
+                "zipcode": settings.zipcode,
+            }
 
     except Exception as e:
         db.rollback()
@@ -95,7 +132,7 @@ def get_settings():
         response.status = 400
         return {"error": "Module parameter is required"}
     if module == "weather":
-        settings = db.query(WeatherSettings).get(1)
+        settings = db.get(WeatherSettings, 1)
 
         db.close()
 
@@ -110,7 +147,7 @@ def get_settings():
         }
 
     elif module == "news":
-        settings = db.query(NewsSettings).get(1)
+        settings = db.get(NewsSettings, 1)
 
         db.close()
 
@@ -122,5 +159,31 @@ def get_settings():
             "language": settings.language,
             "outlet": settings.outlet,
             "rss_feed": settings.rss_feed,
+
+        }
+    elif module == "stocks":
+        settings = db.get(StockSettings, 1)
+
+        db.close()
+
+        if not settings:
+            response.status = 404
+            return {"error": "Stock settings not found"}
+        return {
+            "id": settings.id,
+            "ticker": settings.ticker,
+
+        }
+    elif module == "traffic":
+        settings = db.get(TrafficSettings, 1)
+
+        db.close()
+
+        if not settings:
+            response.status = 404
+            return {"error": "Traffic settings not found"}
+        return {
+            "id": settings.id,
+            "zipcode": settings.zipcode,
 
         }

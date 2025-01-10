@@ -1,39 +1,135 @@
+import { useEffect, useState } from "react";
+import "./StocksSettings.css";
 
-import { useState } from "react";
-import "./StocksSettings.css"
+const StocksSettings = () => {
+    const [stocksSettings, setStocksSettings] = useState({
+        ticker: "NFLX",
+    });
 
-const StocksSettings = () =>{
-    const handleSaveStocksSettings = () => {
-        console.log("Yup Saved the weather settings.");
+
+    const [formValues, setFormValues] = useState({
+        ticker: "NFLX",
+    });
+
+    const [notification, setNotification] = useState({ message: "", type: "" });
+
+
+    useEffect(() => {
+        const loadStocksSettings = async () => {
+            try {
+                const response = await fetch("http://pi400.local:8001/settings/get?module=stocks", {
+                    method: "GET",
+                });
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                if (data) {
+                    setStocksSettings(data);
+                    setFormValues(data);
+                }
+            } catch (error) {
+                console.error("Error loading stocks settings:", error);
+            }
+        };
+
+        loadStocksSettings();
+    }, []);
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormValues((prevValues) => ({
+            ...prevValues,
+            [name]: value,
+        }));
     };
 
-    const [ticker, setTicker] = useState("");
+    const handleSaveStocksSettings = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await fetch("http://pi400.local:8001/settings/save", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    module: "stocks",
+                    settings: formValues,
+                }),
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            setStocksSettings(formValues);
+            setNotification({ message: "Settings successfully saved!", type: "success" });
+        } catch (error) {
+            console.error("Error saving stocks settings:", error);
+            setNotification({ message: "Unable to save settings!", type: "error" });
+        } finally {
+            setTimeout(() => setNotification({ message: "", type: "" }), 3000);
+        }
+    };
+
+    const testStockAPI = async () => {
+        try {
+            const response = await fetch("http://pi400.local:8001/stocks/test", {
+                method: "GET",
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+        } catch (error) {
+            console.error("Error testing Stock API:", error);
+        }
+    };
+
 
     return (
         <div>
+
             <button
-                onClick={handleSaveStocksSettings}
+                onClick={testStockAPI}
                 style={{ height: "18.67px", lineHeight: "0px" }}
             >
                 Test Stocks API
             </button>
             <br />
-            Current Ticker: {ticker}
-            <br />
-            <label htmlFor="ticker-input">Enter a Ticker Symbol: </label>
-            <input
-                type="text"
-                id="ticker-input"
-            />
+            <div style={{ marginTop: "15px" }}>
+                Current Stocks code: {stocksSettings?.ticker || "Loading..."}
+            </div>
+
+            <div style={{ marginTop: "15px" }}>
+                <label htmlFor="ticker-input">Enter a Ticker: </label>
+                <input
+                    type="text"
+                    id="ticker-input"
+                    name="ticker"
+                    value={formValues?.ticker}
+                    onChange={handleInputChange}
+                    style={{ width: "70px" }}
+                />
+            </div>
+
+            {notification.message && (
+                <div
+                    style={{
+                        color: notification.type === "success" ? "green" : "red",
+                        marginBottom: "15px",
+                    }}
+                >
+                    {notification.message}
+                </div>
+            )}
             <br />
             <button
                 onClick={handleSaveStocksSettings}
                 style={{ height: "18.67px", lineHeight: "0px", marginTop: "15px" }}
             >
-                Save Stocks Settings
+                Save Stock Settings
             </button>
+
         </div>
     );
-}   
+};
 
 export default StocksSettings;

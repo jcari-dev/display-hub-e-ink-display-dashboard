@@ -28,8 +28,6 @@ const WeatherSettings = () => {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        console.log(weatherSettings)
-        console.log(data)
         if (data) {
           setWeatherSettings(data);
           setFormValues(data);
@@ -65,7 +63,6 @@ const WeatherSettings = () => {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-      console.log("Save Response:", data);
       setWeatherSettings(formValues);
       setNotification({ message: "Settings successfully saved!", type: "success" });
     } catch (error) {
@@ -85,7 +82,6 @@ const WeatherSettings = () => {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-      console.log("Test API Response:", data);
     } catch (error) {
       console.error("Error testing Weather API:", error);
     }
