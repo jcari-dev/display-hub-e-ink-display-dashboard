@@ -22,7 +22,7 @@ else
 fi
 
 echo "Building and starting containers..."
-if docker compose up --build -d --privileged --device=/dev/gpiomem; then
+if docker compose up --build -d; then
     DEVICE_IP=$(hostname -I | awk '{print $1}')
     echo "Installation complete. Access the web GUI at http://$DEVICE_IP"
 else
