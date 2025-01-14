@@ -4,12 +4,9 @@ then
     exit 1
 fi
 
-if docker compose version &> /dev/null; then
-    COMPOSE_COMMAND="docker compose"
-elif command -v docker-compose &> /dev/null; then
-    COMPOSE_COMMAND="docker-compose"
-else
-    echo "Docker Compose is not installed. Please install Docker Compose and try again."
+if ! docker compose version &> /dev/null
+then
+    echo "Docker Compose is not installed. Please install Docker Compose (plugin) and try again."
     exit 1
 fi
 
@@ -27,7 +24,7 @@ else
 fi
 
 echo "Building and starting containers..."
-$COMPOSE_COMMAND up --build -d
+docker compose up --build -d
 
 DEVICE_IP=$(hostname -I | awk '{print $1}')
 
