@@ -12,32 +12,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     zlib1g-dev \
     && rm -rf /var/lib/apt/lists/*
 
+COPY backend/requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
 COPY backend/ .
-
-RUN pip install --no-cache-dir -r requirements.txt
-
-FROM node:18 as frontend-build
-
-WORKDIR /frontend
-COPY frontend/package.json ./
-RUN npm install
-COPY frontend/ ./
-RUN npm run build
-
-FROM python:3.10-slim
-
-WORKDIR /app
-
-COPY --from=backend /app /app
-COPY --from=frontend-build /frontend/build /app/frontend
-
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    libjpeg-dev \
-    zlib1g-dev \
-    && rm -rf /var/lib/apt/lists/*
-
-RUN pip install --no-cache-dir -r requirements.txt
 
 EXPOSE 8000
 
-CMD ["pip", "list"]
+CMD ["python", "app.py"]
