@@ -1,3 +1,5 @@
+#!/bin/bash
+
 if ! command -v docker &> /dev/null
 then
     echo "Docker is not installed. Please install Docker and try again."
@@ -13,18 +15,18 @@ fi
 REPO_URL="https://github.com/jcari-dev/display-hub-e-ink-display-dashboard.git"
 REPO_NAME=$(basename "$REPO_URL" .git) 
 
-echo "Cloning repository..."
-git clone "$REPO_URL"
-
-if [ -d "$REPO_NAME" ]; then
-    cd "$REPO_NAME" || exit
-else
-    echo "Failed to clone repository. Exiting."
-    exit 1
+if [ ! -d "$REPO_NAME" ]; then
+    echo "Cloning repository..."
+    git clone "$REPO_URL"
 fi
 
+cd "$REPO_NAME" || { echo "Failed to navigate to repository directory. Exiting."; exit 1; }
+
 echo "Building and starting containers..."
-docker compose up --build --no-cache -d
+if ! docker compose up --build --no-cache -d; then
+    echo "Failed to build and start containers. Exiting."
+    exit 1
+fi
 
 DEVICE_IP=$(hostname -I | awk '{print $1}')
 
