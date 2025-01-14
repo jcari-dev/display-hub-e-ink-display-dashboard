@@ -31,7 +31,7 @@ fi
 
 # Build and start the containers
 echo "Building and starting containers..."
-docker-compose up --build -d
+docker compose up --build -d || docker-compose up --build -d
 
 # Get the IP address of the device
 DEVICE_IP=$(hostname -I | awk '{print $1}')
