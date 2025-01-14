@@ -1,4 +1,3 @@
-# Backend build stage
 FROM python:3.10-slim as backend
 
 WORKDIR /app
@@ -22,9 +21,8 @@ FROM node:18 as frontend-build
 
 WORKDIR /frontend
 
-COPY frontend/package.json frontend/package-lock.json ./
+COPY frontend/package.json ./ 
 RUN npm install
-
 
 COPY frontend/ ./
 RUN npm run build
@@ -35,10 +33,8 @@ WORKDIR /app
 
 COPY --from=backend /app /app
 
-
 COPY --from=frontend-build /frontend/build /app/static
 
-EXPOSE 8000
-
+EXPOSE 8001
 
 CMD ["python", "app.py"]
