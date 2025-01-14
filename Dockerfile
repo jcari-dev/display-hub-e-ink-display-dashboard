@@ -35,4 +35,4 @@ COPY --from=frontend-build /frontend/build /app/frontend
 
 EXPOSE 8000
 
-CMD ["python", "app.py"]
+CMD ["pip", "list"]
