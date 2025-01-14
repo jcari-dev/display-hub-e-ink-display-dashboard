@@ -29,8 +29,14 @@ FROM python:3.10-slim
 WORKDIR /app
 
 COPY --from=backend /app /app
-
 COPY --from=frontend-build /frontend/build /app/frontend
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libjpeg-dev \
+    zlib1g-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN pip install --no-cache-dir -r requirements.txt
 
 EXPOSE 8000
 
