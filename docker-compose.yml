@@ -1,11 +1,21 @@
 version: "3.8"
 
 services:
-  app:
-    build: .
+  frontend:
+    build:
+      context: .
+      target: frontend-server
+    ports:
+      - "80:80"
+    container_name: frontend
+
+  backend:
+    build:
+      context: .
+      target: backend
     ports:
       - "8001:8001"
-    privileged: true 
-    container_name: web_gui
+    privileged: true
+    container_name: backend
     devices:
       - "/dev/gpiomem:/dev/gpiomem"
