@@ -24,7 +24,7 @@ else
 fi
 
 echo "Building and starting containers..."
-docker compose up --build -d
+docker compose up --build --no-cache -d
 
 DEVICE_IP=$(hostname -I | awk '{print $1}')
 
