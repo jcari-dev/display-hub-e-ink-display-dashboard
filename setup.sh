@@ -8,7 +8,7 @@ then
 fi
 
 # Ensure Docker Compose is installed
-if ! command -v docker-compose &> /dev/null
+if ! docker compose version &> /dev/null && ! command -v docker-compose &> /dev/null
 then
     echo "Docker Compose is not installed. Please install Docker Compose and try again."
     exit 1
