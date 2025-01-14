@@ -11,26 +11,20 @@ then
 fi
 
 REPO_URL="https://github.com/jcari-dev/display-hub-e-ink-display-dashboard.git"
-REPO_NAME=$(basename "$REPO_URL" .git)
+REPO_NAME=$(basename "$REPO_URL" .git) 
 
-if [ ! -d "$REPO_NAME" ]; then
-    echo "Cloning repository..."
-    git clone "$REPO_URL"
-fi
+echo "Cloning repository..."
+git clone "$REPO_URL"
 
-cd "$REPO_NAME" || { echo "Failed to navigate to repository directory. Exiting."; exit 1; }
-
-echo "Building containers..."
-if ! docker compose build --no-cache; then
-    echo "Failed to build containers. Exiting."
+if [ -d "$REPO_NAME" ]; then
+    cd "$REPO_NAME" || exit
+else
+    echo "Failed to clone repository. Exiting."
     exit 1
 fi
 
-echo "Starting containers..."
-if ! docker compose up -d; then
-    echo "Failed to start containers. Exiting."
-    exit 1
-fi
+echo "Building and starting containers..."
+docker compose up --build -d
 
 DEVICE_IP=$(hostname -I | awk '{print $1}')
 
