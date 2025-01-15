@@ -1,4 +1,3 @@
-# Frontend build stage
 FROM node:18 as frontend-build
 
 WORKDIR /frontend
@@ -6,14 +5,15 @@ WORKDIR /frontend
 COPY frontend/package.json ./ 
 RUN npm install
 
-COPY frontend/ ./ 
-RUN npm run build
+COPY frontend/src/ ./  # Make sure to copy the src directory as well
+RUN npm run build  # This should generate the build files
+
 
 FROM nginx:alpine as frontend-server
 
 COPY default.conf /etc/nginx/conf.d/default.conf
 
-COPY --from=frontend-build /frontend/build /usr/share/nginx/html
+COPY --from=frontend-build /frontend/dist /usr/share/nginx/html  # Assuming 'dist' is the output directory
 
 EXPOSE 80
 
