@@ -11,6 +11,14 @@ init_db()
 
 # os.environ['GPIOZERO_PIN_FACTORY'] = 'mock'
 
+@app.route('/<:re:.*>', method='OPTIONS')
+def handle_options():
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
+    response.headers["Access-Control-Allow-Headers"] = "Origin, Accept, Content-Type, X-Requested-With"
+    response.status = 200
+    return {}
+
 
 @app.hook("after_request")
 def enable_cors():
