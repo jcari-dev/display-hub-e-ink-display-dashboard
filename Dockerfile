@@ -13,8 +13,7 @@ FROM nginx:alpine as frontend-server
 
 COPY default.conf /etc/nginx/conf.d/default.conf
 
-COPY --from=frontend-build /frontend/dist /usr/share/nginx/html  # Assuming 'dist' is the output directory
-
+COPY --from=frontend-build /frontend/build /usr/share/nginx/html
 EXPOSE 80
 
 FROM python:3.10-slim as backend
