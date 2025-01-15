@@ -89,7 +89,7 @@ const App = () => {
 
     let moduleSettings = {};
 
-    fetch("http://pi400.local:8001/save_settings", {
+    fetch("http://localhost:8001/save_settings", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -123,7 +123,7 @@ const App = () => {
       modulesOnDisplay.push(moduleData);
     }
 
-    fetch("http://pi400.local:8001/render", {
+    fetch("http://localhost:8001/render", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -144,7 +144,7 @@ const App = () => {
       });
   };
   const handleClearDisplay = () => {
-    fetch("http://pi400.local:8001/render/clear")
+    fetch("http://localhost:8001/render/clear")
       .then((response) => {
         if (response.status === 200) {
           return response.json().then((data) => {
