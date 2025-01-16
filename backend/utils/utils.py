@@ -125,7 +125,7 @@ def generate_traffic_api_file():
             temp_file.write("")
 
         # Set file permissions to 600
-        os.chmod(file_path, stat.S_IRUSR | stat.S_IWUSR)
+        os.chmod(file_path, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
         print(f"File created with secure permissions: {file_path}")
         return file_path
     except Exception as e:
