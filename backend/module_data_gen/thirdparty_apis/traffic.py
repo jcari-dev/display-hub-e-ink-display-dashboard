@@ -135,9 +135,10 @@ def fetch_incidents():
             data = response.json()
             incidents = data.get("incidents", [])
             print(f"Number of incidents found: {len(incidents)}")
+            incidents = incidents[:1]
 
             # Step 4: Process and display each incident
-            for i, incident in enumerate(incidents, start=1):
+            for i, incident in enumerate(incidents):
                 icon_category = incident['properties'].get(
                     'iconCategory', 'N/A')
                 category_description = icon_category_dict.get(
