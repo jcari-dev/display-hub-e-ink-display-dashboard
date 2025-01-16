@@ -1,15 +1,14 @@
-import os
-
-from bottle import Bottle, request, response
+import logging
+from bottle import Bottle, response
 from db import init_db
 from routes import (render_routes, setting_routes, traffic_routes,
                     weather_routes)
 
+logging.basicConfig(level=logging.DEBUG)
 app = Bottle()
 
 init_db()
 
-# os.environ['GPIOZERO_PIN_FACTORY'] = 'mock'
 
 @app.route('/<:re:.*>', method='OPTIONS')
 def handle_options():
