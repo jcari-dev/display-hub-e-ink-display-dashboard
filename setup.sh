@@ -24,6 +24,7 @@ fi
 echo "Building and starting containers..."
 if docker compose up --build -d; then
     DEVICE_IP=$(hostname -I | awk '{print $1}')
+    echo "VITE_BACKEND_URL=http://$DEVICE_IP:8001" > .env
     echo "Installation complete. Access the web GUI at http://$DEVICE_IP"
 else
     echo "Failed to start Docker Compose. Exiting."
