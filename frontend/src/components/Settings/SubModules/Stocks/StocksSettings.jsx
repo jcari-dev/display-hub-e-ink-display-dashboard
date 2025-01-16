@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { backendUrl } from "../../../utils/backendUrl";
+import { backendUrl } from "../../../../utils/backendUrl";
 import "./StocksSettings.css";
 
 const StocksSettings = () => {

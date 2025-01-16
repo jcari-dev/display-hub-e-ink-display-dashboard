@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
+import { backendUrl } from "../../../../utils/backendUrl";
 import "./WeatherSettings.css";
-import { backendUrl } from "../../../utils/backendUrl";
+
 
 
 const WeatherSettings = () => {

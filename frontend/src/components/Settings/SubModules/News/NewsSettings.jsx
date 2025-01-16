@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { backendUrl } from "../../../utils/backendUrl";
+import { backendUrl } from "../../../../utils/backendUrl";
+
 import "./NewsSettings.css";
 
 const NewsSettings = () => {
