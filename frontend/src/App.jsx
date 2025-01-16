@@ -12,6 +12,9 @@ import "./App.css";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 console.log("Backend URL:", backendUrl);
+console.log("Backend URL:", import.meta.env.VITE_BACKEND_URL);
+
+
 const GRID_ROWS = 2;
 const GRID_COLS = 4;
 const POSITION_MAP = {
