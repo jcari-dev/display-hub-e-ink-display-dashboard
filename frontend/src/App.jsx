@@ -10,6 +10,8 @@ import validatePosition from "./utils/validatePosition";
 
 import "./App.css";
 
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
 const GRID_ROWS = 2;
 const GRID_COLS = 4;
 const POSITION_MAP = {
@@ -144,7 +146,7 @@ const App = () => {
       });
   };
   const handleClearDisplay = () => {
-    fetch("http://192.168.0.101:8001/render/clear")
+    fetch(`${backendUrl}/render/clear`)
       .then((response) => {
         if (response.status === 200) {
           return response.json().then((data) => {
