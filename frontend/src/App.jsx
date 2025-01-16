@@ -89,7 +89,7 @@ const App = () => {
 
     let moduleSettings = {};
 
-    fetch("http://0.0.0.0:8001/save_settings", {
+    fetch("http://192.168.0.101:8001/save_settings", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -123,7 +123,7 @@ const App = () => {
       modulesOnDisplay.push(moduleData);
     }
 
-    fetch("http://0.0.0.0:8001/render", {
+    fetch("http://192.168.0.101:8001/render", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
