@@ -10,9 +10,9 @@ import validatePosition from "./utils/validatePosition";
 
 import "./App.css";
 
-const backendUrl = import.meta.env.VITE_BACKEND_URL;
+import { backendUrl } from "./utils/backendUrl";
+
 console.log("Backend URL:", backendUrl);
-console.log("Backend URL:", import.meta.env.VITE_BACKEND_URL);
 
 
 const GRID_ROWS = 2;
