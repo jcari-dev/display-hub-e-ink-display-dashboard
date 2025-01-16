@@ -21,6 +21,8 @@ else
     exit 1
 fi
 
+DEVICE_IP=$(hostname -I | awk '{print $1}')
+
 echo "Creating backendUrl.js with dynamic backend URL..."
 cat > frontend/src/utils/backendUrl.js <<EOF
 export const backendUrl = 'http://$DEVICE_IP:8001';
@@ -28,8 +30,6 @@ EOF
 
 echo "Building and starting containers..."
 if docker compose up --build -d; then
-    DEVICE_IP=$(hostname -I | awk '{print $1}')
-
     echo "Installation complete. Access the web GUI at http://$DEVICE_IP"
 else
     echo "Failed to start Docker Compose. Exiting."
