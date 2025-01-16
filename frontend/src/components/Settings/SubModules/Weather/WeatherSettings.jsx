@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import "./WeatherSettings.css";
+import { backendUrl } from "../../../utils/backendUrl";
+
 
 const WeatherSettings = () => {
   const [weatherSettings, setWeatherSettings] = useState({
@@ -21,7 +23,7 @@ const WeatherSettings = () => {
   useEffect(() => {
     const loadWeatherSettings = async () => {
       try {
-        const response = await fetch("http://192.168.0.101:8001/settings/get?module=weather", {
+        const response = await fetch(`${backendUrl}/settings/get?module=weather`, {
           method: "GET",
         });
         if (!response.ok) {
@@ -51,7 +53,7 @@ const WeatherSettings = () => {
   const handleSaveWeatherSettings = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://192.168.0.101:8001/settings/save", {
+      const response = await fetch(`${backendUrl}/settings/save`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -75,7 +77,7 @@ const WeatherSettings = () => {
 
   const testWeatherAPI = async () => {
     try {
-      const response = await fetch("http://192.168.0.101:8001/weather/test", {
+      const response = await fetch(`${backendUrl}/weather/test`, {
         method: "GET",
       });
       if (!response.ok) {
