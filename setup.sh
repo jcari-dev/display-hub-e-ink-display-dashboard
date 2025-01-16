@@ -21,6 +21,11 @@ else
     exit 1
 fi
 
+echo "Creating backendUrl.js with dynamic backend URL..."
+cat > frontend/src/utils/backendUrl.js <<EOF
+export const backendUrl = 'http://$DEVICE_IP:8001';
+EOF
+
 echo "Building and starting containers..."
 if docker compose up --build -d; then
     DEVICE_IP=$(hostname -I | awk '{print $1}')
