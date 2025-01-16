@@ -11,7 +11,7 @@ import validatePosition from "./utils/validatePosition";
 import "./App.css";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
-
+console.log("Backend URL:", backendUrl);
 const GRID_ROWS = 2;
 const GRID_COLS = 4;
 const POSITION_MAP = {
