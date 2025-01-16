@@ -144,7 +144,7 @@ const App = () => {
       });
   };
   const handleClearDisplay = () => {
-    fetch("http://0.0.0.0:8001/render/clear")
+    fetch("http://192.168.0.101:8001/render/clear")
       .then((response) => {
         if (response.status === 200) {
           return response.json().then((data) => {
