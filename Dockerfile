@@ -5,7 +5,7 @@ WORKDIR /frontend
 COPY frontend/package.json ./ 
 RUN npm install
 
-COPY frontend/src/ ./  # Make sure to copy the src directory as well
+COPY frontend/ ./  # Make sure to copy the src directory as well
 RUN npm run build  # This should generate the build files
 
 
