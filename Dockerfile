@@ -5,16 +5,18 @@ WORKDIR /frontend
 COPY frontend/package.json ./ 
 RUN npm install
 
-COPY frontend/ ./  # Make sure to copy the src directory as well
-RUN npm run build  # This should generate the build files
 
+COPY frontend/ ./  
+RUN npm run build
 
 FROM nginx:alpine as frontend-server
 
 COPY default.conf /etc/nginx/conf.d/default.conf
 
 COPY --from=frontend-build /frontend/build /usr/share/nginx/html
+
 EXPOSE 80
+
 
 FROM python:3.10-slim as backend
 
