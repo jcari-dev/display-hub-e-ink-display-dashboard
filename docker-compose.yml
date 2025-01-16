@@ -7,6 +7,8 @@ services:
       target: frontend-server
     ports:
       - "80:80"
+    volumes:
+      - ./frontend/.env:/frontend/.env
     container_name: frontend
     networks:
       - my-network
