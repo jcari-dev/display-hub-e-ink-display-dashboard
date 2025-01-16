@@ -1,10 +1,11 @@
 import logging
+import sys
 from bottle import Bottle, response
 from db import init_db
 from routes import (render_routes, setting_routes, traffic_routes,
                     weather_routes)
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(stream=sys.stdout, level=logging.NOTSET)
 app = Bottle()
 
 init_db()

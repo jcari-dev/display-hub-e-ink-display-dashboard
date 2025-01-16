@@ -9,7 +9,7 @@ RUN npm install
 COPY frontend/ ./  
 RUN npm run build
 
-FROM nginx:alpine as frontend-server
+FROM nginx:alpine AS frontend-server
 
 COPY default.conf /etc/nginx/conf.d/default.conf
 
@@ -18,7 +18,7 @@ COPY --from=frontend-build /frontend/build /usr/share/nginx/html
 EXPOSE 80
 
 
-FROM python:3.10-slim as backend
+FROM python:3.10-slim AS backend
 
 WORKDIR /app
 
