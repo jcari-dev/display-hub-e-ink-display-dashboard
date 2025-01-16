@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { backendUrl } from "../../../utils/backendUrl";
 import "./TrafficSettings.css";
 
 const TrafficSettings = () => {
@@ -15,7 +16,7 @@ const TrafficSettings = () => {
 		const loadTrafficSettings = async () => {
 			try {
 				const response = await fetch(
-					"http://pi400.local:8001/settings/get?module=traffic",
+					`${backendUrl}/settings/get?module=traffic`,
 					{
 						method: "GET",
 					},
@@ -46,7 +47,7 @@ const TrafficSettings = () => {
 
 	const handleSaveTrafficSettings = async () => {
 		try {
-			const response = await fetch("http://pi400.local:8001/settings/save", {
+			const response = await fetch(`${backendUrl}/settings/save`, {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({
@@ -72,7 +73,7 @@ const TrafficSettings = () => {
 
 	const handleGenerateFile = async () => {
 		try {
-			const response = await fetch("http://pi400.local:8001/traffic/generate", {
+			const response = await fetch(`${backendUrl}/traffic/generate`, {
 				method: "GET",
 			});
 			if (!response.ok) {
@@ -94,7 +95,7 @@ const TrafficSettings = () => {
 
 	const handleConsumeFile = async () => {
 		try {
-			const response = await fetch("http://pi400.local:8001/traffic/consume", {
+			const response = await fetch(`${backendUrl}/traffic/consume`, {
 				method: "GET",
 			});
 			if (!response.ok) {
@@ -116,7 +117,7 @@ const TrafficSettings = () => {
 
 	const testTrafficAPI = async () => {
 		try {
-			const response = await fetch("http://pi400.local:8001/traffic/test", {
+			const response = await fetch(`${backendUrl}/traffic/test`, {
 				method: "GET",
 			});
 			if (!response.ok) {

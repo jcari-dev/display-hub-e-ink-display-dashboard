@@ -12,9 +12,6 @@ import "./App.css";
 
 import { backendUrl } from "./utils/backendUrl";
 
-console.log("Backend URL:", backendUrl);
-
-
 const GRID_ROWS = 2;
 const GRID_COLS = 4;
 const POSITION_MAP = {
@@ -94,7 +91,7 @@ const App = () => {
 
     let moduleSettings = {};
 
-    fetch("http://192.168.0.101:8001/save_settings", {
+    fetch(`${backendUrl}/save_settings`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -128,7 +125,7 @@ const App = () => {
       modulesOnDisplay.push(moduleData);
     }
 
-    fetch("http://192.168.0.101:8001/render", {
+    fetch(`${backendUrl}/render`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

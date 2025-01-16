@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { backendUrl } from "../../../utils/backendUrl";
 import "./StocksSettings.css";
 
 const StocksSettings = () => {
@@ -17,7 +18,7 @@ const StocksSettings = () => {
     useEffect(() => {
         const loadStocksSettings = async () => {
             try {
-                const response = await fetch("http://pi400.local:8001/settings/get?module=stocks", {
+                const response = await fetch(`${backendUrl}/settings/get?module=stocks`, {
                     method: "GET",
                 });
                 if (!response.ok) {
@@ -47,7 +48,7 @@ const StocksSettings = () => {
     const handleSaveStocksSettings = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch("http://pi400.local:8001/settings/save", {
+            const response = await fetch(`${backendUrl}/settings/save`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -71,7 +72,7 @@ const StocksSettings = () => {
 
     const testStockAPI = async () => {
         try {
-            const response = await fetch("http://pi400.local:8001/stocks/test", {
+            const response = await fetch(`${backendUrl}/stocks/test`, {
                 method: "GET",
             });
             if (!response.ok) {

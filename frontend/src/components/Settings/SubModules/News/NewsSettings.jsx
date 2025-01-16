@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { backendUrl } from "../../../utils/backendUrl";
 import "./NewsSettings.css";
 
 const NewsSettings = () => {
@@ -176,7 +177,7 @@ const NewsSettings = () => {
 		const loadNewsSettings = async () => {
 			try {
 				const response = await fetch(
-					"http://pi400.local:8001/settings/get?module=news",
+					`${backendUrl}/settings/get?module=news`,
 				);
 				if (!response.ok)
 					throw new Error(`HTTP error! status: ${response.status}`);
@@ -214,7 +215,7 @@ const NewsSettings = () => {
 	const handleSaveNewsSettings = async (e) => {
 		e.preventDefault();
 		try {
-			const response = await fetch("http://pi400.local:8001/settings/save", {
+			const response = await fetch(`${backendUrl}/settings/save`, {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({
