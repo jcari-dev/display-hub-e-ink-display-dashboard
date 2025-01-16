@@ -35,4 +35,6 @@ Thumbs.db
 
 # Misc
 *.lgd-nfy0
+
+#db
 backend/db.sqlite3
