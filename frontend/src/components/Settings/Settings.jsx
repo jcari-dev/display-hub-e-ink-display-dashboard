@@ -26,7 +26,7 @@ const Settings = ({ module }) => {
     )
   } else {
     return (
-      <div>
+      <div style={{marginBottom:"25px"}}>
         <h1>{module} Settings</h1>
         {moduleMaps[module]}
       </div>

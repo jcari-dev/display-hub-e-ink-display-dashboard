@@ -38,3 +38,4 @@ Thumbs.db
 
 #db
 backend/db.sqlite3
+frontend/src/utils/backendUrl.js

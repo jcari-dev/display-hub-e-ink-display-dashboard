@@ -138,10 +138,10 @@ const TrafficSettings = () => {
 
 	return (
 		<div>
-			<div style={{ marginBottom: "15px" }}>
+			{/* <div style={{ marginBottom: "15px" }}>
 				DO NOT FORGET TO ADD WHICH ALERTS DO YOU ACTUALLY WANT, LIKE HEAVY
 				TRAFFIC, ETC.
-			</div>
+			</div> */}
 			<div style={{ marginBottom: "15px" }}>
 				Current Zip code: {trafficSettings?.zipcode || "Loading..."}
 			</div>

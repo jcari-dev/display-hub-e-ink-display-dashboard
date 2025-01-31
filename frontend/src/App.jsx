@@ -30,7 +30,7 @@ const getPositionKey = (position) => POSITION_MAP[position.join(",")] || null;
 const App = () => {
   const [components, setComponents] = useState([]);
   const [newModuleValue, setNewModuleValue] = useState("Weather::1x1");
-  const [settingsData, setSettingsData] = useState("None");
+  const [settingsData, setSettingsData] = useState("Select a Module for");
   const [warning, setWarning] = useState("");
   const [modulesOnDisplay, setModulesOnDisplay] = useState([]);
 
@@ -178,7 +178,7 @@ const App = () => {
       </select>
       <button
         onClick={addComponent}
-        style={{ height: "18.67px", lineHeight: "0px", marginLeft: "5px" }}
+        style={{ height: "18.67px", lineHeight: "0px", marginLeft: "5px", marginTop: "25px" }}
       >
         Add Module
       </button>

@@ -242,7 +242,6 @@ const NewsSettings = () => {
 
 	return (
 		<div>
-			<h2>News Settings</h2>
 			<div>
 				Current Settings: {newsSettings.language || "None"},{" "}
 				{newsSettings.outlet || "None"}, {newsSettings.rss_feed || "None"}
