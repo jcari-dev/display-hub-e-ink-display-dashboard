@@ -263,6 +263,9 @@ const App = () => {
         </div>
       </div>
       <Settings module={settingsData} />
+      <footer style={{ marginTop: "20px", fontSize: "0.8em", textAlign: "center", opacity: 0.7 }}>
+    Icon by <a href="https://www.flaticon.com/authors/prosymbols-premium" target="_blank" rel="noopener noreferrer">Prosymbols Premium</a>
+  </footer>
     </div>
   );
 };
