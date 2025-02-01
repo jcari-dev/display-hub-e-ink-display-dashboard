@@ -3,7 +3,7 @@
 
 Display Hub is an innovative e-ink display manager designed to simplify interactions with e-ink screens. With a focus on modularity and usability, it allows users to effortlessly configure and display essential information through an intuitive drag-and-drop web interface.
 
-![All Modules Sample](https://jcari-dev.github.io/display-hub-e-ink-display-dashboard-docs/assets/images/all_modules_sample-1d0df081ed8907aed591f27b78fed296.jpg)
+![All Modules Sample](all_modules_sample.jpg)
 
 ## Key Features
 
